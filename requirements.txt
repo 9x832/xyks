@@ -1,0 +1,6 @@
+opencv-python
+numpy
+pyautogui
+pytesseract
+Pillow
+scikit-image
