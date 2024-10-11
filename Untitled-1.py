@@ -14,20 +14,12 @@ pytesseract.pytesseract.tesseract_cmd = r'D:\Tesseract\Tesseract-OCR\tesseract.e
 
 not_found_count = 0     #记录失败次数，若超过5次，则终止程序，可按需调整
 succeed_count = 0       #记录成功次数，若超过10次，则本轮结束，可按需调整
-# i=0 #照片命名变量
-# #用来保存将要识别的图像，用于测试
-# def save_image(image,filename):
-#     global i
-#     cv2.imwrite(filename+'['+str(i)+']'+'.jpg',cv2.cvtColor(image,cv2.COLOR_RGB2BGR))
-#     i+=1
 
 def capture_area():
     region = (300, 322, 380, 150)  # (x, y, width, height) 坐标是由上到下，由左到右的;此坐标是识别区域坐标
     screenshot = pyautogui.screenshot(region=region)
     image=np.array(screenshot)
-    # save_image(image,'Timage')
     return image
-    # return np.array(screenshot)
 
 def preprocess_image(image):
     # 转换为灰度图
@@ -44,13 +36,6 @@ def recognize_numbers(image):
     text = pytesseract.image_to_string(thresh, config='--psm 6')
     numbers = [int(num) for num in re.findall(r'\d+', text)]
     return numbers
-    # gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    # _, thresh = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)
-    # text = pytesseract.image_to_string(thresh, config='--psm 6')
-    # # 使用正则表达式提取所有数字
-    # # numbers = [int(s) for s in text.split() if s.isdigit()]
-    # numbers=[int(num) for num in re.findall(r'\d+',text)]
-    # return numbers
 
 def draw_comparison(numbers):
     global not_found_count,succeed_count
@@ -113,18 +98,18 @@ def draw_less_than(origin_x, origin_y, size):
 #     pyautogui.moveTo(origin_x+size,origin_y)
 #     pyautogui.dragRel(size,0,duration=0.05)
 
-def has_image_changed(image1,image2):
-    # 使用结构相似度指数SSIM
-    # 将图像转换为灰度图像
-    gray_image1 = cv2.cvtColor(image1, cv2.COLOR_BGR2GRAY).astype(np.float64) / 255.0
-    gray_image2 = cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY).astype(np.float64) / 255.0
-    # 确保图像至少为 7x7 像素
-    if gray_image1.shape[0] < 7 or gray_image1.shape[1] < 7 or gray_image2.shape[0] < 7 or gray_image2.shape[1] < 7:
-        return False  # 图像太小，无法计算 SSIM
-    # 计算两个图像的 SSIM
-    similarity = ssim(gray_image1, gray_image2,data_range=1.0)
+# def has_image_changed(image1,image2):
+#     # 使用结构相似度指数SSIM
+#     # 将图像转换为灰度图像
+#     gray_image1 = cv2.cvtColor(image1, cv2.COLOR_BGR2GRAY).astype(np.float64) / 255.0
+#     gray_image2 = cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY).astype(np.float64) / 255.0
+#     # 确保图像至少为 7x7 像素
+#     if gray_image1.shape[0] < 7 or gray_image1.shape[1] < 7 or gray_image2.shape[0] < 7 or gray_image2.shape[1] < 7:
+#         return False  # 图像太小，无法计算 SSIM
+#     # 计算两个图像的 SSIM
+#     similarity = ssim(gray_image1, gray_image2,data_range=1.0)
     
-    return similarity < 0.9
+#     return similarity < 0.9
 
 def main():
     global not_found_count,succeed_count
